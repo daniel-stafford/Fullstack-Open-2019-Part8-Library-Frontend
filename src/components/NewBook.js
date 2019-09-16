@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 
-const NewBook = (props) => {
+const NewBook = props => {
   const [title, setTitle] = useState('')
-  const [author, setAuhtor] = useState('')
+  const [author, setAuthor] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
@@ -11,14 +11,19 @@ const NewBook = (props) => {
     return null
   }
 
-  const submit = async (e) => {
+  const submit = async e => {
     e.preventDefault()
+    console.log('Adding book', title, 'by', author, 'published in', published)
+
+    await props.addBook({
+      variables: { title, author, published, genres }
+    })
 
     console.log('add book...')
 
     setTitle('')
     setPublished('')
-    setAuhtor('')
+    setAuthor('')
     setGenres([])
     setGenre('')
   }
@@ -42,7 +47,7 @@ const NewBook = (props) => {
           author
           <input
             value={author}
-            onChange={({ target }) => setAuhtor(target.value)}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
@@ -58,11 +63,11 @@ const NewBook = (props) => {
             value={genre}
             onChange={({ target }) => setGenre(target.value)}
           />
-          <button onClick={addGenre} type="button">add genre</button>
+          <button onClick={addGenre} type='button'>
+            add genre
+          </button>
         </div>
-        <div>
-          genres: {genres.join(' ')}
-        </div>
+        <div>genres: {genres.join(' ')}</div>
         <button type='submit'>create book</button>
       </form>
     </div>
