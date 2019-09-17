@@ -29,7 +29,7 @@ const ADD_BOOK = gql`
   mutation addBook(
     $title: String!
     $author: String!
-    $published: String!
+    $published: Int!
     $genres: [String!]!
   ) {
     addBook(
