@@ -53,7 +53,7 @@ const Authors = ({ show, result, editBorn }) => {
         <h3>Update Author</h3>
         <form onSubmit={submit}>
           <div>
-            <Select value={name} onChange={handleChange} options={options} />
+            <Select isSearchable onChange={handleChange} options={options} />
           </div>
           <div>
             born
