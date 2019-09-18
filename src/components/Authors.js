@@ -8,7 +8,11 @@ const Authors = ({ show, result, editBorn }) => {
     return null
   }
   if (result.loading) {
-    return <div>loading...</div>
+    return <div>Loading...</div>
+  }
+
+  if (!result.data) {
+    return <div>No authors available.</div>
   }
 
   const authors = result.data.allAuthors
@@ -17,7 +21,6 @@ const Authors = ({ show, result, editBorn }) => {
   })
   const handleChange = selectedOption => {
     setName(selectedOption.value)
-    console.log(`Option selected:`, selectedOption)
   }
   const submit = async e => {
     e.preventDefault()
