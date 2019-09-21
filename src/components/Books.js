@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import _ from 'lodash'
 
 const Books = ({ show, result }) => {
+  const [filter, setFilter] = useState('')
+
   if (!show) {
     return null
   }
@@ -14,6 +16,15 @@ const Books = ({ show, result }) => {
     return <div>No books available.</div>
   }
   const books = result.data.allBooks
+  const booksToDisplay = () => {
+    if (filter === '') return books
+    const result = _.filter(books, b => {
+      return b.genres.includes(filter)
+    })
+    console.log('booksToDisplay', result)
+    return result
+  }
+
   const genres = () => {
     let result = books.map(b => b.genres)
     result = [].concat.apply([], result)
@@ -22,6 +33,7 @@ const Books = ({ show, result }) => {
   }
   const handleFilter = genre => {
     console.log(`you clicked ${genre}`)
+    setFilter(genre)
   }
 
   return (
@@ -34,7 +46,7 @@ const Books = ({ show, result }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map(b => (
+          {booksToDisplay().map(b => (
             <tr key={b.title}>
               <td>{b.title}</td>
               <td>{b.author.name}</td>
