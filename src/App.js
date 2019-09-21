@@ -3,8 +3,16 @@ import { gql } from 'apollo-boost'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import LoginForm from './components/LoginForm'
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 
+const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`
 const ALL_AUTHORS = gql`
   {
     allAuthors {
@@ -78,6 +86,8 @@ const App = () => {
     }, 5000)
   }
 
+  const [token, setToken] = useState(null)
+
   const [addBook] = useMutation(ADD_BOOK, {
     onError: handleError,
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
@@ -85,8 +95,28 @@ const App = () => {
   const [editBorn] = useMutation(EDIT_BORN, { onError: handleError })
   const authors = useQuery(ALL_AUTHORS, { onError: handleError })
   const books = useQuery(ALL_BOOKS)
+  const [login] = useMutation(LOGIN, {
+    onError: handleError
+  })
+  const client = useApolloClient()
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
+  }
+
   const [page, setPage] = useState('authors')
 
+  if (!token) {
+    return (
+      <div>
+        {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+        <h2>Login</h2>
+        <LoginForm login={login} setToken={token => setToken(token)} />
+      </div>
+    )
+  }
   return (
     <div>
       {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
@@ -94,6 +124,7 @@ const App = () => {
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={logout}>logout</button>
       </div>
       <Authors result={authors} editBorn={editBorn} show={page === 'authors'} />
       <Books result={books} show={page === 'books'} />
