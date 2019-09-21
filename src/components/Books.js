@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 
 const Books = ({ show, result }) => {
   if (!show) {
@@ -13,10 +14,19 @@ const Books = ({ show, result }) => {
     return <div>No books available.</div>
   }
   const books = result.data.allBooks
+  const genres = () => {
+    let result = books.map(b => b.genres)
+    result = [].concat.apply([], result)
+    result = _.union(result)
+    return result
+  }
+  const handleFilter = genre => {
+    console.log(`you clicked ${genre}`)
+  }
+
   return (
     <div>
       <h2>books</h2>
-
       <table>
         <tbody>
           <tr>
@@ -24,15 +34,20 @@ const Books = ({ show, result }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map(a => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
+          {books.map(b => (
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      {genres().map(g => (
+        <button onClick={() => handleFilter(g)} key={g}>
+          {g}
+        </button>
+      ))}
     </div>
   )
 }

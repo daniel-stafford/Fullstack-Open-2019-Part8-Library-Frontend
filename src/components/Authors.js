@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
 
-const Authors = ({ show, result, editBorn }) => {
+const Authors = ({ show, result, editBorn, token }) => {
   const [name, setName] = useState('')
   const [year, setYear] = useState('')
   if (!show) {
@@ -52,23 +52,25 @@ const Authors = ({ show, result, editBorn }) => {
           ))}
         </tbody>
       </table>
-      <div>
-        <h3>Update Author</h3>
-        <form onSubmit={submit}>
-          <div>
-            <Select isSearchable onChange={handleChange} options={options} />
-          </div>
-          <div>
-            born
-            <input
-              value={year}
-              onChange={({ target }) => setYear(parseInt(target.value, 10))}
-            />
-          </div>
+      {token === undefined && (
+        <div>
+          <h3>Update Author</h3>
+          <form onSubmit={submit}>
+            <div>
+              <Select isSearchable onChange={handleChange} options={options} />
+            </div>
+            <div>
+              born
+              <input
+                value={year}
+                onChange={({ target }) => setYear(parseInt(target.value, 10))}
+              />
+            </div>
 
-          <button type='submit'>update author </button>
-        </form>
-      </div>
+            <button type='submit'>update author </button>
+          </form>
+        </div>
+      )}
     </div>
   )
 }

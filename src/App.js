@@ -36,6 +36,7 @@ const ALL_BOOKS = gql`
       }
       published
       id
+      genres
     }
   }
 `
@@ -115,8 +116,23 @@ const App = () => {
     return (
       <div>
         {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
-        <h2>Login</h2>
-        <LoginForm login={login} setToken={token => setToken(token)} />
+        <div>
+          <button onClick={() => setPage('authors')}>authors</button>
+          <button onClick={() => setPage('books')}>books</button>
+          <button onClick={() => setPage('login')}>login</button>
+        </div>
+        <Authors
+          result={authors}
+          editBorn={editBorn}
+          show={page === 'authors'}
+          token={token}
+        />
+        <Books result={books} show={page === 'books'} />
+        <LoginForm
+          login={login}
+          setToken={token => setToken(token)}
+          show={page === 'login'}
+        />
       </div>
     )
   }
