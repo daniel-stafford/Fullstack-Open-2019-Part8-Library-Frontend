@@ -71,6 +71,7 @@ const EDIT_BORN = gql`
     editAuthor(name: $name, setBornTo: $year) {
       name
       born
+      bookCount
       id
     }
   }
@@ -78,7 +79,7 @@ const EDIT_BORN = gql`
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
-
+  const client = useApolloClient()
   const handleError = error => {
     setErrorMessage(error.message.substring(15))
     setTimeout(() => {
@@ -92,13 +93,15 @@ const App = () => {
     onError: handleError,
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
   })
-  const [editBorn] = useMutation(EDIT_BORN, { onError: handleError })
+  const [editBorn] = useMutation(EDIT_BORN, {
+    onError: handleError,
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+  })
   const authors = useQuery(ALL_AUTHORS, { onError: handleError })
   const books = useQuery(ALL_BOOKS)
   const [login] = useMutation(LOGIN, {
     onError: handleError
   })
-  const client = useApolloClient()
 
   const logout = () => {
     setToken(null)
