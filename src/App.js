@@ -49,6 +49,7 @@ const ADD_BOOK = gql`
       author {
         name
         born
+        bookCount
         id
       }
       published
@@ -71,18 +72,18 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
 
   const handleError = error => {
-    setErrorMessage(error.graphQLErrors[0].message)
+    setErrorMessage(error.message.substring(15))
     setTimeout(() => {
       setErrorMessage(null)
-    }, 10000)
+    }, 5000)
   }
 
   const [addBook] = useMutation(ADD_BOOK, {
     onError: handleError,
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
   })
-  const [editBorn] = useMutation(EDIT_BORN)
-  const authors = useQuery(ALL_AUTHORS)
+  const [editBorn] = useMutation(EDIT_BORN, { onError: handleError })
+  const authors = useQuery(ALL_AUTHORS, { onError: handleError })
   const books = useQuery(ALL_BOOKS)
   const [page, setPage] = useState('authors')
 
