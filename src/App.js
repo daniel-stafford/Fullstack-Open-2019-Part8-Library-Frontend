@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommendations from './components/Recommendations'
 import LoginForm from './components/LoginForm'
 import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 
@@ -10,6 +11,16 @@ const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       value
+    }
+  }
+`
+
+const USER = gql`
+  {
+    me {
+      username
+      id
+      genre
     }
   }
 `
@@ -103,6 +114,8 @@ const App = () => {
   const [login] = useMutation(LOGIN, {
     onError: handleError
   })
+  const user = useQuery(USER)
+  console.log('user on app', user)
 
   const logout = () => {
     setToken(null)
@@ -142,12 +155,23 @@ const App = () => {
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
+        <button onClick={() => setPage('recommendations')}>
+          recommendations
+        </button>
+
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={logout}>logout</button>
       </div>
       <Authors result={authors} editBorn={editBorn} show={page === 'authors'} />
       <Books result={books} show={page === 'books'} />
       <NewBook addBook={addBook} show={page === 'add'} />
+      {user.data.me.genre !== undefined && (
+        <Recommendations
+          result={books}
+          show={page === 'recommendations'}
+          user={user}
+        />
+      )}
     </div>
   )
 }
